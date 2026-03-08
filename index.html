@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collective Circle presents Founder's Hot Seat</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
- <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFOSEF54JG"></script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF0SEF54JG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-ZFOSEF54JG');
+  gtag('config', 'G-ZF0SEF54JG');
 </script>
 <style>
   :root {
@@ -550,6 +551,7 @@ let answers = [];
 function startGame() {
   document.getElementById('intro').style.display = 'none';
   document.getElementById('game').style.display = 'block';
+  gtag('event', 'quiz_started', { event_category: 'Quiz' });
   loadQuestion();
 }
 
@@ -608,6 +610,12 @@ function selectAnswer(chosen) {
   if (isCorrect) score++;
   answers.push({ q: q.q.substring(0, 55) + '...', correct: isCorrect, timedOut: chosen === -1 });
 
+  gtag('event', 'question_answered', {
+    event_category: 'Quiz',
+    event_label: `Q${current + 1}`,
+    value: isCorrect ? 1 : 0
+  });
+
   btns.forEach((btn, i) => {
     if (i === q.correct) btn.classList.add('reveal-correct');
     if (i === chosen && !isCorrect) btn.classList.add('wrong');
@@ -638,6 +646,12 @@ function showResults() {
   document.getElementById('game').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   document.getElementById('progressFill').style.width = '100%';
+
+  gtag('event', 'quiz_completed', {
+    event_category: 'Quiz',
+    event_label: `Score: ${score}/5`,
+    value: score
+  });
 
   document.getElementById('scoreNum').textContent = `${score}/${questions.length}`;
 
