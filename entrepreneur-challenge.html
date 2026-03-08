@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collective Circle presents Founder's Hot Seat</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --card: #161616;
+    --accent: #f5c842;
+    --accent2: #ff6b35;
+    --text: #f0ece0;
+    --muted: #666;
+    --border: #2a2a2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,200,66,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 680px;
+    width: 100%;
+  }
+
+  /* INTRO SCREEN */
+  #intro {
+    text-align: center;
+    animation: fadeUp 0.6s ease;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .scenario-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 36px;
+  }
+
+  .scenario-card .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .scenario-card p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #ccc;
+  }
+
+  .scenario-card strong { color: var(--text); }
+
+  .start-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 16px 48px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .start-btn:hover {
+    background: #ffd84d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(245,200,66,0.3);
+  }
+
+  /* GAME SCREEN */
+  #game { display: none; animation: fadeUp 0.5s ease; }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    margin-right: 20px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .timer-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 18px;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  .timer-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--accent);
+    transition: color 0.3s;
+  }
+
+  .timer-num.urgent { color: var(--accent2); animation: pulse 0.5s infinite alternate; }
+
+  .timer-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .q-number {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    min-height: 80px;
+  }
+
+  .q-hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .options {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .option-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 14px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(245,200,66,0.05);
+    transform: translateX(4px);
+  }
+
+  .option-btn.correct {
+    border-color: #4ade80;
+    background: rgba(74,222,128,0.08);
+    color: #4ade80;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--accent2);
+    background: rgba(255,107,53,0.08);
+    color: var(--accent2);
+  }
+
+  .option-btn.reveal-correct {
+    border-color: #4ade80;
+    background: rgba(74,222,128,0.05);
+    color: #4ade80;
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .feedback-box .fb-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .feedback-box.good .fb-label { color: #4ade80; }
+  .feedback-box.bad .fb-label { color: var(--accent2); }
+
+  .feedback-box p { color: #bbb; font-size: 0.9rem; line-height: 1.6; }
+
+  .next-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 12px 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    display: none;
+  }
+
+  .next-btn:hover {
+    background: var(--accent);
+    color: #000;
+  }
+
+  /* RESULTS */
+  #results { display: none; animation: fadeUp 0.5s ease; text-align: center; }
+
+  .score-ring {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) 0deg, var(--border) 0deg);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+
+  .score-ring::before {
+    content: '';
+    width: 100px; height: 100px;
+    background: var(--bg);
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+    color: var(--accent);
+  }
+
+  .result-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .result-subtitle {
+    color: var(--muted);
+    margin-bottom: 36px;
+    font-size: 0.95rem;
+  }
+
+  .score-breakdown {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .bq { color: #999; flex: 1; margin-right: 12px; }
+  .breakdown-row .br { font-weight: 500; white-space: nowrap; }
+  .breakdown-row .br.y { color: #4ade80; }
+  .breakdown-row .br.n { color: var(--accent2); }
+
+  .restart-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover {
+    background: #ffd84d;
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    from { opacity: 1; } to { opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="badge">🔥 Collective Circle presents Founder's Hot Seat</div>
+    <h1>Can you think like a <span>founder?</span></h1>
+    <p class="subtitle">5 real-world market validation scenarios.<br>Pick the smartest move. No fluff, no theory.</p>
+
+    <div class="scenario-card">
+      <div class="label">⚡ The Setup</div>
+      <p>You have an idea for a <strong>meal-planning app for busy parents</strong>. No code written. No money raised. You have <strong>2 weeks and $0</strong> to figure out if this is worth pursuing.</p>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">Start the Hot Seat →</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game">
+    <div class="top-bar">
+      <div class="progress-wrap">
+        <div class="progress-label">Progress</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="timer-box">
+        <div class="timer-num" id="timerNum">45</div>
+        <div class="timer-label">sec</div>
+      </div>
+    </div>
+
+    <div class="q-number" id="qNum">Question 1 of 5</div>
+    <div class="question-text" id="qText"></div>
+    <div class="q-hint" id="qHint"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="fb-label" id="fbLabel"></div>
+      <p id="fbText"></p>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="score-ring" id="scoreRing">
+      <div class="score-num" id="scoreNum">0/5</div>
+    </div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-subtitle" id="resultSubtitle"></div>
+    <div class="score-breakdown" id="breakdown"></div>
+    <button class="restart-btn" onclick="restart()">Play Again</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Day 1. You want to know if parents actually need a meal-planning app. What's your FIRST move?",
+    hint: "Think: fastest signal with least effort.",
+    options: [
+      "Build a quick landing page with an email signup form",
+      "Post in 3 Facebook parenting groups asking about their meal-planning struggles",
+      "Survey 100 strangers on SurveyMonkey",
+      "Start designing the app to see how it feels"
+    ],
+    correct: 1,
+    feedback: {
+      good: "🎯 Spot on! Conversations reveal pain you never thought to ask about. A landing page tells you people are curious — a real conversation tells you they're desperate. Start talking to humans first.",
+      bad: "Close, but not quite. A landing page gives weak signal (clicks ≠ pain). Surveys from strangers are noise. Building is the last thing you do. Real conversations in communities where your customers already hang out? That's gold."
+    }
+  },
+  {
+    q: "You've talked to 12 parents. 8 say 'I'd totally use that!' How do you interpret this?",
+    hint: "Beware the polite yes.",
+    options: [
+      "Strong signal — 67% positive means real demand",
+      "Weak signal — people say yes to be nice, look for behavior not words",
+      "Enough to start building the MVP",
+      "Run more surveys to get to 100 responses"
+    ],
+    correct: 1,
+    feedback: {
+      good: "💡 Exactly. 'I'd use it' costs nothing to say. You need to find people who are already cobbling together a messy solution — spreadsheets, sticky notes, recipe screenshots. That frustrated behavior is the real signal.",
+      bad: "This is the most common founder trap. People are polite. 'I'd use it' is not a commitment. Look for people who are already solving this problem badly — they're your real early customers."
+    }
+  },
+  {
+    q: "You want to test if parents will PAY for this. You have no app. What do you do?",
+    hint: "The oldest trick in the validation playbook.",
+    options: [
+      "Ask parents directly: 'Would you pay $9/month for this?'",
+      "Create a fake checkout page and see if people enter their card",
+      "Offer to manually send a personalized weekly meal plan for $5 and find 10 paying customers",
+      "Post a poll on Instagram asking about pricing"
+    ],
+    correct: 2,
+    feedback: {
+      good: "🔥 Brilliant. This is the 'concierge MVP'. You do the work manually, they pay real money. If 10 strangers hand you $5, you have proof. If no one pays, you saved yourself 6 months of building. This is how the best founders think.",
+      bad: "The only real proof is real money from real strangers. Asking 'would you pay?' gets polite answers. Fake checkouts are ethically dicey. A manual concierge service — you do it by hand, they pay cash — is the cleanest signal you can get."
+    }
+  },
+  {
+    q: "After 2 weeks you have: 3 paying customers ($5 each), 40 email signups, and lots of positive feedback. Should you start building?",
+    hint: "How much signal is enough signal?",
+    options: [
+      "Yes! 40 signups + positive vibes = go time",
+      "No — 3 customers is too few, keep validating until you have 20+",
+      "Maybe — the 3 paying customers matter most, but double down before building",
+      "Yes, but only build the single most-requested feature"
+    ],
+    correct: 2,
+    feedback: {
+      good: "✅ Right call. 3 paying strangers is actually meaningful — but it's not enough to build a full product. Do the concierge manually for 2–3 more weeks. Learn what they love, what annoys them, what they'd pay more for. Then build the one thing they can't live without.",
+      bad: "Email signups are vanity. 3 paying customers is the only real signal here — but it's thin. Keep doing it manually. You'll learn 10x more in the next 2 weeks than by building. Build only when the manual process is breaking because demand is too high."
+    }
+  },
+  {
+    q: "A friend says 'just build it fast and launch — done is better than perfect!' How do you respond?",
+    hint: "Think about what 'building fast' actually costs.",
+    options: [
+      "Agree — ship fast, learn from real users",
+      "Disagree — validate pain and willingness to pay BEFORE writing a line of code",
+      "Partially agree — build a tiny MVP in a weekend",
+      "Ignore them and keep doing manual concierge"
+    ],
+    correct: 1,
+    feedback: {
+      good: "⚡ Yes. 'Build fast' sounds scrappy but it's actually lazy validation. Writing code before confirming real demand is just expensive guessing. The best founders delay building as long as possible — using the time to deeply understand the customer instead.",
+      bad: "Almost. 'Done is better than perfect' is true for execution, not validation. Building without confirmed demand just means you ship faster to nobody. The order matters: pain → willingness to pay → build. Don't skip steps."
+    }
+  }
+];
+
+let current = 0, score = 0, timer = null, timeLeft = 45;
+let answers = [];
+
+function startGame() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById('qNum').textContent = `Question ${current+1} of ${questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qHint').textContent = `💭 ${q.hint}`;
+  document.getElementById('progressFill').style.width = `${(current/questions.length)*100}%`;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  startTimer();
+}
+
+function startTimer() {
+  timeLeft = 45;
+  updateTimer();
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      timeUp();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.getElementById('timerNum');
+  el.textContent = timeLeft;
+  el.className = 'timer-num' + (timeLeft <= 10 ? ' urgent' : '');
+}
+
+function timeUp() {
+  selectAnswer(-1);
+}
+
+function selectAnswer(chosen) {
+  clearInterval(timer);
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const isCorrect = chosen === q.correct;
+  if (isCorrect) score++;
+  answers.push({ q: q.q.substring(0, 55) + '...', correct: isCorrect, timedOut: chosen === -1 });
+
+  btns.forEach((btn, i) => {
+    if (i === q.correct) btn.classList.add('reveal-correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+    if (i === chosen && isCorrect) {
+      btn.classList.remove('reveal-correct');
+      btn.classList.add('correct');
+    }
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box ' + (isCorrect ? 'good' : 'bad');
+  fb.style.display = 'block';
+  document.getElementById('fbLabel').textContent = isCorrect ? '✓ Founder thinking!' : (chosen === -1 ? '⏱ Time\'s up!' : '✗ Not quite');
+  document.getElementById('fbText').textContent = isCorrect ? q.feedback.good : q.feedback.bad;
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('progressFill').style.width = '100%';
+
+  document.getElementById('scoreNum').textContent = `${score}/${questions.length}`;
+
+  // animate ring
+  const pct = (score / questions.length) * 360;
+  document.getElementById('scoreRing').style.background =
+    `conic-gradient(#f5c842 ${pct}deg, #2a2a2a ${pct}deg)`;
+
+  const titles = ['Keep Studying 📚', 'Getting There 🌱', 'Solid Instincts 💡', 'Founder Material 🚀', 'Market Whisperer 🔥'];
+  const subs = [
+    "Validation is a skill — and now you know what to study.",
+    "You've got the right instincts on some of this. Review the misses.",
+    "You think like a founder more than most. Sharpen the edges.",
+    "Strong! You understand that evidence beats assumptions.",
+    "You'd save months of wasted building. Rare skill."
+  ];
+
+  document.getElementById('resultTitle').textContent = titles[score];
+  document.getElementById('resultSubtitle').textContent = subs[score];
+
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = answers.map((a, i) => `
+    <div class="breakdown-row">
+      <span class="bq">Q${i+1}: ${a.q}</span>
+      <span class="br ${a.correct ? 'y' : 'n'}">${a.timedOut ? '⏱ Timed out' : (a.correct ? '✓ Correct' : '✗ Wrong')}</span>
+    </div>
+  `).join('');
+}
+
+function restart() {
+  current = 0; score = 0; answers = [];
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('intro').style.display = 'block';
+}
+</script>
+</body>
+</html>
